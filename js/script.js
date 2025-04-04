@@ -59,6 +59,22 @@ async function getSongs(folder) {
         })
     })
 
+    // Add event listener to mute the track
+    document.querySelector(".volume>img").addEventListener("click", e=>{ 
+        if(e.target.src.includes("volume.svg")){
+            e.target.src = e.target.src.replace("volume.svg", "mute.svg")
+            currentSong.volume = 0;
+            document.querySelector(".range").getElementsByTagName("input")[0].value = 0;
+        }
+        else{
+            e.target.src = e.target.src.replace("mute.svg", "volume.svg")
+            currentSong.volume = .10;
+            document.querySelector(".range").getElementsByTagName("input")[0].value = 10;
+        }
+
+    })
+    return songs
+
 }
 
 
@@ -81,7 +97,7 @@ const playMusic = (track, pause = false) => {
 
 async function displayAlbums() {
     console.log("displaying albums")
-    let a = await fetch(`/songs/`)
+    let a = await fetch(`http://127.0.0.1:5500/songs/`)
     let response = await a.text();
     let div = document.createElement("div")
     div.innerHTML = response;
@@ -97,7 +113,7 @@ async function displayAlbums() {
             let folder = e.href.split("/").slice(-2)[0]
 
             // Get the metadata of the folder
-            let a = await fetch(`/songs/${folder}/info.json`)
+            let a = await fetch(`http://127.0.0.1:5500/songs/${folder}/info.json`)
             let response = await a.json(); 
 
             cardContainer.innerHTML = cardContainer.innerHTML + ` <div data-folder="${folder}" class="card">
@@ -121,9 +137,11 @@ async function displayAlbums() {
         e.addEventListener("click", async item => {
             console.log("Fetching Songs")
             songs = await getSongs(`songs/${item.currentTarget.dataset.folder}`)  
+            playMusic(songs[0])
 
         })
     })
+    
 }
 
 
@@ -216,6 +234,22 @@ async function main() {
             document.querySelector(".volume>img").src = document.querySelector(".volume>img").src.replace("img/mute.svg", "img/volume.svg")
         }
     })
+
+    // Add event listener to mute the track
+    document.querySelector(".volume>img").addEventListener("click", e=>{ 
+        if(e.target.src.includes("volume.svg")){
+            e.target.src = e.target.src.replace("volume.svg", "mute.svg")
+            currentSong.volume = 0;
+            document.querySelector(".range").getElementsByTagName("input")[0].value = 0;
+        }
+        else{
+            e.target.src = e.target.src.replace("mute.svg", "volume.svg")
+            currentSong.volume = .10;
+            document.querySelector(".range").getElementsByTagName("input")[0].value = 10;
+        }
+
+    })
+
 
     
 }
